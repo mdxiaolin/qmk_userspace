@@ -20,6 +20,10 @@
  * ⚠ F14 = Alt+F(normal 확인), F15 = Alt+G(이전복사+확인).
  *   뒤집어 넣으면 확인 대신 이전 리포트를 붙여넣고 저장한다.
  *
+ * ⚠ 부트로더 진입: FN(오른엄지 한/영) hold + 홈로우 맨 바깥 키.
+ *   왼쪽 = 'A' 왼쪽(Ctrl 자리), 오른쪽 = ';' 오른쪽(' 자리). 좌우 각각 진입한다.
+ *   이게 없으면 플래시 후 물리 리셋 버튼 말고는 되돌릴 방법이 없다.
+ *
  * ⚠ LT(_FN, KC_RALT) 는 모디파이어를 tap 에 넣는 형태라 QMK 공식 지원이 아니다.
  *   한/영 tap 이 안 나오면 KC_LNG1 로 바꾸거나 커스텀 키코드로 구현할 것.
  */
@@ -68,6 +72,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  *        S D F G      = ←  ↓  ↑  →                    ← 문자 (A' 배열)
  *        X C V B      = C+← 앞단어삭제 뒤단어삭제 C+→  ← 단어
  *        A = Caps Word,  Z = CapsLock,  row3 여분 = Delete
+ *        홈로우 외곽열 좌우 = QK_BOOT (부트로더) — Glove80 의 magic+홈로우외곽 과 같은 자리
  *
  *  오른손 숫자행 = F15 F16 F17 F18 F19,  - 자리 = '='
  *        U I O P \ = F7  F8  F9  F10 F11
@@ -80,7 +85,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 [_FN] = LAYOUT(
   _______, _______, LDEL_U,  LDEL_C,  LDEL_D,  _______,                   KC_F15,  KC_F16,  KC_F17,  KC_F18,  KC_F19,  KC_EQL,
   _______, _______, KC_HOME, KC_PGDN, KC_PGUP, KC_END,                    _______, KC_F7,   KC_F8,   KC_F9,   KC_F10,  KC_F11,
-  _______, CW_TOGG, KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT,                   _______, KC_F4,   KC_F5,   KC_F6,   KC_F12,  _______,
+  QK_BOOT, CW_TOGG, KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT,                   _______, KC_F4,   KC_F5,   KC_F6,   KC_F12,  QK_BOOT,
   _______, KC_CAPS, LCTL(KC_LEFT), WDEL_B, WDEL_F, LCTL(KC_RGHT), KC_DEL,
                                                           _______, _______, KC_F1,   KC_F2,   KC_F3,   _______, _______,
                              _______, _______, _______,           _______, _______, _______
