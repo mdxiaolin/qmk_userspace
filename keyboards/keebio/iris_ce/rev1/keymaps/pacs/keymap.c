@@ -199,6 +199,19 @@ static bool     sat_gui_down      = false;
 static bool     sat_gui_held      = false;
 static uint16_t sat_gui_timer     = 0;
 
+/* Alt 순환 중 Shift 는 Alt 을 풀지 않는다 — Alt+Shift+Tab 역방향용. */
+static bool is_shift_key(uint16_t keycode) {
+    switch (keycode) {
+        case KC_LSFT:
+        case KC_RSFT:
+        case SFT_OS:
+        case TH_HAN_RSFT:
+            return true;
+        default:
+            return false;
+    }
+}
+
 static void release_super_alt_tab(void) {
     if (is_alt_tab_active) {
         unregister_code(KC_LALT);
@@ -207,8 +220,10 @@ static void release_super_alt_tab(void) {
 }
 
 void matrix_scan_user(void) {
-    /* 단독 hold도 180ms가 지나면 실제 Win key-down으로 전환한다. */
-    if (sat_gui_down && !sat_gui_held && timer_elapsed(sat_gui_timer) >= 180) {
+    /* 단독 hold가 280ms를 넘으면 실제 Win key-down으로 전환한다.
+     * 180ms는 창 순환 연타 중 한 번만 늦어도 시작 메뉴가 떠서 순환이 끊겼다.
+     * Win 단독은 거의 쓰지 않으므로 tap 쪽에 여유를 준다. */
+    if (sat_gui_down && !sat_gui_held && timer_elapsed(sat_gui_timer) >= 280) {
         release_super_alt_tab();
         register_code(KC_LGUI);
         sat_gui_held = true;
@@ -251,8 +266,10 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
         sat_gui_held = true;
     }
 
-    /* 다른 키를 누르면 Alt를 먼저 놓고 그 키는 정상 처리한다. */
-    if (is_alt_tab_active && record->event.pressed) {
+    /* 다른 키를 누르면 Alt를 먼저 놓고 그 키는 정상 처리한다.
+     * Shift 만 예외다. 순환 중 Shift 를 잡고 SAT 을 다시 치면 Alt+Shift+Tab 이
+     * 나가 역방향으로 돈다(Windows 기본 동작과 동일). */
+    if (is_alt_tab_active && record->event.pressed && !is_shift_key(keycode)) {
         release_super_alt_tab();
     }
 
