@@ -2,16 +2,26 @@
  * 기준 문서: docs/IRIS_CE_LAYOUT.md
  *
  * 엄지 (편의 순위)
- *   왼  1위 BSpc(rest) / 2위 ] hold=FN / 3위 F14(순수 tap) / 4위 Super Alt-Tab hold=LGui
- *   오른 1위 Space(rest) / 2위 Enter hold=LAlt / 3위 F13 hold=LCtrl / 4위 한영 hold=RShift
+ *   왼  1위 BSpc(rest, 순수 tap) / 2위 ] hold=LAlt / 3위 F14(순수 tap) / row4 SAT hold=LGui
+ *   오른 1위 Space(rest) hold=FN / 2위 Enter(순수 tap) / 3위 F13 hold=LCtrl / row4 한영 hold=RShift
  *
- * 2026-09-06: Enter 를 오른엄지로 되돌린다. 머슬메모리가 오른쪽이고,
- *   판독 시 주요 핫스트링이 왼손이라 마무리까지 왼쪽이면 부하가 몰린다.
- *   Enter·F13 이 오른쪽에 모여 왼손 타이핑 → 오른엄지 확정 리듬이 된다.
+ * 2026-09-06: FN 을 오른엄지 rest(Space)에 겹친다.
+ *   레이어 내용이 왼손에 몰려 있다(화살표 391/일, Home/End, 단어·행 삭제).
+ *   FN 이 오른엄지면 교차손이 되고, rest 라 잡는 자세도 가장 편하다.
  *
- *   XR 연속 판독의 핵심 루프는 ] → F14 다. 둘 다 왼엄지지만 키3(rest 옆) →
- *   키1 이라 rest 를 지나는 완만한 이동이다. 이전 배치(키4 뻗기 ↔ 키1 오므리기)
- *   의 극단 왕복이 사라진다.
+ *   rest 에 hold 를 얹지 않는다는 원칙은 '모디파이어' 기준이었다. layer-tap 은
+ *   오발동해도 화살표가 나갈 뿐이라 즉시 보이고 무해하다. Ctrl+S(저장)·
+ *   Ctrl+W(닫기) 처럼 되돌리기 어려운 결과가 없다.
+ *
+ *   그 결과 Alt 이 ](94/일)로 내려가고 Enter(378/일)는 순수 tap 이 된다.
+ *   378 -> 94 로 mod-tap 오판정 노출이 4배 줄었다.
+ *
+ * ⚠ 대가: 레이어 진입에 tapping term(220ms) 만큼 기다려야 한다. tap-preferred 라
+ *   Space 를 그만큼 잡은 뒤에야 화살표가 먹는다. 버스트에서는 첫 진입만 지연되지만
+ *   한 번만 누를 때는 체감된다. 견디기 어려우면 이 값을 먼저 낮춘다.
+ *
+ *   XR 연속 판독의 핵심 루프 ] → F14 는 둘 다 왼엄지지만 키3(rest 옆) → 키1 이라
+ *   rest 를 지나는 완만한 이동이다.
  *
  * Space는 순수 tap을 유지한다. Enter는 tap 뒤 즉시 문자가 이어지는 경우가 드물어
  * Alt hold를 받으며, F14는 오판정 위험 없는 순수 확정키로 둔다.
@@ -19,7 +29,7 @@
  * ⚠ F14 = Alt+F(normal 확인), F15 = Alt+G(이전복사+확인).
  *   뒤집어 넣으면 확인 대신 이전 리포트를 붙여넣고 저장한다.
  *
- * ⚠ 부트로더 진입: FN(왼엄지 ]) hold + 홈로우 맨 바깥 키.
+ * ⚠ 부트로더 진입: FN(오른엄지 Space) hold + 홈로우 맨 바깥 키.
  *   왼쪽 = 'A' 왼쪽(Ctrl 자리), 오른쪽 = ';' 오른쪽(' 자리). 좌우 각각 진입한다.
  *   이게 없으면 플래시 후 물리 리셋 버튼 말고는 되돌릴 방법이 없다.
  *
@@ -92,8 +102,8 @@ bool combo_should_trigger(uint16_t combo_index, combo_t *combo, uint16_t keycode
 }
 
 /* 엄지 */
-#define TH_RBRC_FN LT(_FN, KC_RBRC) /* ] tap / FN hold      — 왼 2위 */
-#define TH_ENT_ALT LALT_T(KC_ENT)  /* Enter tap / Alt hold — 오른 2위 */
+#define TH_RBRC_ALT LALT_T(KC_RBRC) /* ] tap / Alt hold     — 왼 2위 */
+#define TH_SPC_FN LT(_FN, KC_SPC)  /* Space tap / FN hold  — 오른 1위 rest */
 #define TH_F13  LCTL_T(KC_F13)     /* F13 tap / Ctrl hold  — 오른 3위 */
 #define TH_HAN_RSFT RSFT_T(KC_RALT) /* 한영 tap / RShift hold — 오른 4위 (보조 Shift) */
 #define SFT_OS  OSM(MOD_LSFT)      /* 왼쪽 외곽열 sticky shift (유지) */
@@ -105,7 +115,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  *  Tab        Q  W  E  R  T        Y  U  I  O  P  \
  *  Ctrl       A  S  D  F  G        H  J  K  L  ;  '
  *  Shift      Z  X  C  V  B  SAT 한영   N  M  ,  .  /  Shift
- *                  F14 BSpc ]  Enter Space F13
+ *                  F14 BSpc ]  Enter Space F13   (Space=FN hold)
  *  Esc = Grave Escape :  Esc / Shift+Esc = ~ / Win+Esc = `
  */
 [_BASE] = LAYOUT(
@@ -113,10 +123,10 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   KC_TAB,  KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,                      KC_Y,    KC_U,    KC_I,    KC_O,    KC_P,    KC_BSLS,
   KC_LCTL, KC_A,    KC_S,    KC_D,    KC_F,    KC_G,                      KC_H,    KC_J,    KC_K,    KC_L,    KC_SCLN, KC_QUOT,
   SFT_OS,  KC_Z,    KC_X,    KC_C,    KC_V,    KC_B,   SAT_GUI, TH_HAN_RSFT, KC_N, KC_M, KC_COMM, KC_DOT, KC_SLSH, KC_RSFT,
-                             KC_F14,  KC_BSPC, TH_RBRC_FN,       TH_ENT_ALT, KC_SPC, TH_F13
+                             KC_F14,  KC_BSPC, TH_RBRC_ALT,      KC_ENT,  TH_SPC_FN, TH_F13
 ),
 
-/* ── FN (왼엄지 ] hold) ───────────────────────────────────────────────────
+/* ── FN (오른엄지 Space hold) ─────────────────────────────────────────────
  *  왼손  숫자행 2 3 4 = 윗행/현재행/아랫행 삭제        ← 행 단위
  *        W E R T      = Home PgDn PgUp End            ← 줄/페이지
  *        S D F G      = ←  ↓  ↑  →                    ← 문자 (A' 배열)
@@ -129,8 +139,8 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  *        J K L ;   = F4  F5  F6  F12
  *        M , .     = F1  F2  F3
  *
- *  ⚠ 엄지 '*' 예외는 그대로 필요하다. FN(왼엄지)+왼손 화살표·편집키가 같은 손이다.
- *    아래 chordal_hold_layout 참조.
+ *  ⚠ 엄지 '*' 예외는 그대로 필요하다. Alt(왼엄지 ])+왼손 글자가 같은 손이다.
+ *    FN 자체는 오른엄지라 왼손 화살표와 교차손이다. 아래 chordal_hold_layout 참조.
  */
 [_FN] = LAYOUT(
   _______, _______, LDEL_U,  LDEL_C,  LDEL_D,  _______,                   KC_F15,  KC_F16,  KC_F17,  KC_F18,  KC_F19,  KC_EQL,
@@ -144,7 +154,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 /* ── Chordal Hold 손 지정 ────────────────────────────────────────────────
  * Chordal Hold 는 "반대손 조합만 hold" 규칙이라 같은 손 조합을 tap 으로 settle 한다.
- * FN(왼엄지) + 왼손 화살표·편집키, Alt(오른엄지) + 오른손 글자가 여기 걸린다.
+ * Alt(왼엄지 ]) + 왼손 글자가 여기 걸린다. FN(오른엄지 Space)+왼손 화살표는 교차손이다.
  * Alt+Tab 은 SAT_GUI 매크로가 처리하므로 이 규칙과 무관하다.
  * 엄지와 row3 여분을 '*' 로 두면 이 규칙에서 면제된다.
  *   https://docs.qmk.fm/tap_hold#chordal-hold
@@ -164,9 +174,9 @@ const char chordal_hold_layout[MATRIX_ROWS][MATRIX_COLS] PROGMEM = LAYOUT(
  */
 uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
-        case TH_RBRC_FN: return 220; /* 레이어 진입: ] tap 오발동 방지 */
+        case TH_SPC_FN:  return 220; /* 레이어 진입: Space tap 오발동 방지 */
         case TH_F13:     return 200; /* 확정 동사: 오발동 시 되돌릴 수 없어 여유를 둔다 */
-        case TH_ENT_ALT: return 200; /* Enter tap과 Alt hold를 안정적으로 구분 */
+        case TH_RBRC_ALT: return 200; /* ] tap과 Alt hold를 안정적으로 구분 */
         default:      return 180;
     }
 }
@@ -174,7 +184,7 @@ uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
 bool get_permissive_hold(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
         case TH_F13:
-        case TH_ENT_ALT:
+        case TH_RBRC_ALT:
         case TH_HAN_RSFT:
             return true;            /* 모디파이어는 빠르게 확정 */
         default:
