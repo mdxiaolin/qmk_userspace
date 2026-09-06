@@ -128,6 +128,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 /* ── FN (오른엄지 Space hold) ─────────────────────────────────────────────
  *  왼손  숫자행 2 3 4 = 윗행/현재행/아랫행 삭제        ← 행 단위
+ *        Q            = Alt+F4 (Quit) — 창 닫기 전용 키
  *        W E R T      = Home PgDn PgUp End            ← 줄/페이지
  *        S D F G      = ←  ↓  ↑  →                    ← 문자 (A' 배열)
  *        X C V B      = C+← 앞단어삭제 뒤단어삭제 C+→  ← 단어
@@ -144,7 +145,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  */
 [_FN] = LAYOUT(
   _______, _______, LDEL_U,  LDEL_C,  LDEL_D,  _______,                   KC_F15,  KC_F16,  KC_F17,  KC_F18,  KC_F19,  KC_EQL,
-  _______, _______, KC_HOME, KC_PGDN, KC_PGUP, KC_END,                    _______, KC_F7,   KC_F8,   KC_F9,   KC_F10,  KC_F11,
+  _______, LALT(KC_F4), KC_HOME, KC_PGDN, KC_PGUP, KC_END,                _______, KC_F7,   KC_F8,   KC_F9,   KC_F10,  KC_F11,
   QK_BOOT, CW_TOGG, KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT,                   _______, KC_F4,   KC_F5,   KC_F6,   KC_F12,  QK_BOOT,
   _______, KC_CAPS, LCTL(KC_LEFT), WDEL_B, WDEL_F, LCTL(KC_RGHT), KC_DEL,
                                                           _______, _______, KC_F1,   KC_F2,   KC_F3,   _______, _______,
