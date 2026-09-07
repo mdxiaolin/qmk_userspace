@@ -15,13 +15,20 @@
 #define TAPPING_TERM 180
 #define QUICK_TAP_TERM 0
 #define PERMISSIVE_HOLD          /* keymap.c 에서 키별로 다시 끈다 */
+#define TAPPING_TERM_PER_KEY    /* get_tapping_term() is enabled below */
+#define PERMISSIVE_HOLD_PER_KEY /* get_permissive_hold() is enabled below */
+#define QUICK_TAP_TERM_PER_KEY  /* get_quick_tap_term() is enabled below */
 
 /* 같은 손 롤로 인한 mod-tap 오발동 억제.
- * ⚠ Chordal Hold 는 "반대손 조합만 hold" 규칙이다. FN 이 왼엄지고 화살표도 왼손이라
- *   그대로 두면 레이어가 tap 으로 settle 되어 동작하지 않는다.
- *   keymap.c 의 chordal_hold_layout 에서 엄지·row3 여분을 '*' 로 면제했다.
- *   https://docs.qmk.fm/tap_hold#chordal-hold */
+ * 홈로우 모드를 쓰지 않으므로 노출은 작지만, 엄지 mod-tap 에도 도움이 된다. */
 #define CHORDAL_HOLD
+
+/* ── 왼손 Copy/Paste 콤보 ──────────────────────────────────────────────
+ * X+C = Copy, C+V = Paste. Base 레이어에서만 동작하며 keymap.c의
+ * combo_should_trigger()가 직전 120ms 유휴 조건을 추가로 검사한다. */
+#define COMBO_TERM 40
+#define COMBO_STRICT_TIMER
+#define COMBO_SHOULD_TRIGGER
 
 /* ── Caps Word ─────────────────────────────────────────────────────────
  * 영문 약어(T2WI · STIR · ACL · DDx) 입력용. 다음 스페이스까지 대문자.

@@ -9,11 +9,11 @@
  *   레이어 내용이 왼손에 몰려 있다(화살표 391/일, Home/End, 단어·행 삭제).
  *   FN 이 오른엄지면 교차손이 되고, rest 라 잡는 자세도 가장 편하다.
  *
- *   rest 에 hold 를 얹지 않는다는 원칙은 '모디파이어' 기준이었다. layer-tap 은
- *   오발동해도 화살표가 나갈 뿐이라 즉시 보이고 무해하다. Ctrl+S(저장)·
- *   Ctrl+W(닫기) 처럼 되돌리기 어려운 결과가 없다.
+ *   Space hold 는 FN 레이어를 여는 동작이다. FN에는 행 삭제, Alt+F4, QK_BOOT가
+ *   포함되므로 Space의 우발적인 hold를 무해한 동작으로 취급하지 않는다.
+ *   따라서 Space/FN은 220ms tap-preferred로 설정하고, 짧은 Space 입력을 우선한다.
  *
- *   그 결과 Alt 이 ](94/일)로 내려가고 Enter(378/일)는 순수 tap 이 된다.
+ *   그 결과 Alt 는 ](94/일)에, FN 은 Space에 배치되며 Enter(378/일)는 순수 tap 이 된다.
  *   378 -> 94 로 mod-tap 오판정 노출이 4배 줄었다.
  *
  * ⚠ 대가: 레이어 진입에 tapping term(220ms) 만큼 기다려야 한다. tap-preferred 라
@@ -23,8 +23,8 @@
  *   XR 연속 판독의 핵심 루프 ] → F14 는 둘 다 왼엄지지만 키3(rest 옆) → 키1 이라
  *   rest 를 지나는 완만한 이동이다.
  *
- * Space는 순수 tap을 유지한다. Enter는 tap 뒤 즉시 문자가 이어지는 경우가 드물어
- * Alt hold를 받으며, F14는 오판정 위험 없는 순수 확정키로 둔다.
+ * Space는 FN hold를 겸하는 dual-role 키이므로 220ms tap-preferred로 짧은 입력을 우선한다.
+ * Enter는 순수 tap, ]는 200ms Alt hold, F13은 200ms Ctrl hold로 각각 분리한다.
  *
  * ⚠ F14 = Alt+F(normal 확인), F15 = Alt+G(이전복사+확인).
  *   뒤집어 넣으면 확인 대신 이전 리포트를 붙여넣고 저장한다.
@@ -33,7 +33,8 @@
  *   왼쪽 = 'A' 왼쪽(Ctrl 자리), 오른쪽 = ';' 오른쪽(' 자리). 좌우 각각 진입한다.
  *   이게 없으면 플래시 후 물리 리셋 버튼 말고는 되돌릴 방법이 없다.
  *
- * 한/영은 오른쪽 row4 여분의 RShift mod-tap, ]는 오른엄지 FN layer-tap이다.
+ * 한/영은 오른쪽 row4 여분의 RShift mod-tap, ]는 왼쪽 엄지 Alt mod-tap,
+ * Space는 오른쪽 엄지 FN layer-tap이다.
  */
 
 #include QMK_KEYBOARD_H
@@ -49,6 +50,10 @@ enum custom_keycodes {
     COPY_ONCE,            /* X+C combo → Ctrl+C */
     PASTE_ONCE,           /* C+V combo → Ctrl+V */
     SAT_GUI,              /* tap=Super Alt-Tab / hold=Win */
+    CMD_PALETTE,          /* FN+1: Windows Command Palette */
+    TASK_MANAGER,         /* FN+Y: Ctrl+Shift+Esc */
+    SECURE_ATTENTION,     /* FN+H: Ctrl+Alt+Del (local) */
+    RDP_SECURE_ATTENTION, /* FN+N: Ctrl+Alt+End (RDP) */
 };
 
 enum combo_events {
@@ -127,15 +132,16 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 ),
 
 /* ── FN (오른엄지 Space hold) ─────────────────────────────────────────────
- *  왼손  숫자행 2 3 4 = 윗행/현재행/아랫행 삭제        ← 행 단위
- *        Q            = Alt+F4 (Quit) — 창 닫기 전용 키
- *        W E R T      = Home PgDn PgUp End            ← 줄/페이지
- *        S D F G      = ←  ↓  ↑  →                    ← 문자 (A' 배열)
- *        X C V B      = C+← 앞단어삭제 뒤단어삭제 C+→  ← 단어
- *        A = Caps Word,  Z = CapsLock,  row3 여분 = Delete
+ *  왼손  숫자행 2 3 4 = 윗행/현재행/아랫행 삭제, 5 = [ ← 행 단위
+ *        T            = Alt+F4 (Quit) — 창 닫기 전용 키
+ *        Q W E R      = Home PgDn PgUp End            ← 줄/페이지
+ *        A S D F      = ←  ↓  ↑  →                    ← 문자 (ASDF 배열)
+ *        Z X C V      = C+← 앞단어삭제 뒤단어삭제 C+→  ← 단어
+ *        G = Caps Word,  B = CapsLock,  row3 여분 = Delete
  *        홈로우 외곽열 좌우 = QK_BOOT (부트로더) — Glove80 의 magic+홈로우외곽 과 같은 자리
  *
  *  오른손 숫자행 = F15 F16 F17 F18 F19,  - 자리 = '='
+ *  시스템키: 1=Command Palette, Y=Task Manager, H=로컬 보안 화면, N=RDP 보안 화면
  *        U I O P \ = F7  F8  F9  F10 F11
  *        J K L ;   = F4  F5  F6  F12
  *        M , .     = F1  F2  F3
@@ -144,11 +150,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  *    FN 자체는 오른엄지라 왼손 화살표와 교차손이다. 아래 chordal_hold_layout 참조.
  */
 [_FN] = LAYOUT(
-  _______, _______, LDEL_U,  LDEL_C,  LDEL_D,  _______,                   KC_F15,  KC_F16,  KC_F17,  KC_F18,  KC_F19,  KC_EQL,
-  _______, LALT(KC_F4), KC_HOME, KC_PGDN, KC_PGUP, KC_END,                _______, KC_F7,   KC_F8,   KC_F9,   KC_F10,  KC_F11,
-  QK_BOOT, CW_TOGG, KC_LEFT, KC_DOWN, KC_UP,   KC_RGHT,                   _______, KC_F4,   KC_F5,   KC_F6,   KC_F12,  QK_BOOT,
-  _______, KC_CAPS, LCTL(KC_LEFT), WDEL_B, WDEL_F, LCTL(KC_RGHT), KC_DEL,
-                                                          _______, _______, KC_F1,   KC_F2,   KC_F3,   _______, _______,
+  _______, CMD_PALETTE, LDEL_U,  LDEL_C,  LDEL_D,  KC_LBRC,                   KC_F15,  KC_F16,  KC_F17,  KC_F18,  KC_F19,  KC_EQL,
+  _______, KC_HOME, KC_PGDN, KC_PGUP, KC_END, LALT(KC_F4),                TASK_MANAGER, KC_F7,   KC_F8,   KC_F9,   KC_F10,  KC_F11,
+  QK_BOOT, KC_LEFT, KC_DOWN, KC_UP, KC_RGHT, CW_TOGG,                   SECURE_ATTENTION, KC_F4,   KC_F5,   KC_F6,   KC_F12,  QK_BOOT,
+  _______, LCTL(KC_LEFT), WDEL_B, WDEL_F, LCTL(KC_RGHT), KC_CAPS, KC_DEL,
+                                                           _______, RDP_SECURE_ATTENTION, KC_F1,   KC_F2,   KC_F3,   _______, _______,
                              _______, _______, _______,           _______, _______, _______
 )
 };
@@ -171,7 +177,7 @@ const char chordal_hold_layout[MATRIX_ROWS][MATRIX_COLS] PROGMEM = LAYOUT(
 #endif
 
 /* ── tap-hold 튜닝 ───────────────────────────────────────────────────────
- * Enter/Alt와 F13/Ctrl은 200ms로 tap/hold를 구분한다.
+ * ]/Alt와 F13/Ctrl은 200ms로 tap/hold를 구분하고, Space/FN은 220ms tap-preferred다.
  */
 uint16_t get_tapping_term(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
@@ -287,6 +293,22 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     if (!record->event.pressed) return true;
 
     switch (keycode) {
+        case CMD_PALETTE:          /* Win+Alt+Space — PowerToys Command Palette */
+            tap_code16(LGUI(LALT(KC_SPC)));
+            return false;
+
+        case TASK_MANAGER:         /* Ctrl+Shift+Esc */
+            tap_code16(LCTL(LSFT(KC_ESC)));
+            return false;
+
+        case SECURE_ATTENTION:     /* Ctrl+Alt+Del — local Windows security screen */
+            tap_code16(LCTL(LALT(KC_DEL)));
+            return false;
+
+        case RDP_SECURE_ATTENTION: /* Ctrl+Alt+End — security screen inside RDP */
+            tap_code16(LCTL(LALT(KC_END)));
+            return false;
+
         case COPY_ONCE:
             tap_code16(C(KC_C));
             return false;
