@@ -325,9 +325,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             SEND_STRING(SS_LCTL(SS_LSFT(SS_TAP(X_RIGHT))) SS_DELAY(12) SS_TAP(X_DELETE));
             return false;
 
-        case LDEL_C:   /* 현재행 삭제 : Home → Shift+↓ → Del */
+        case LDEL_C:   /* 현재행 삭제 : Home → Shift+End → Del */
             SEND_STRING(SS_TAP(X_HOME) SS_DELAY(12)
-                        SS_LSFT(SS_TAP(X_DOWN)) SS_DELAY(12)
+                        SS_LSFT(SS_TAP(X_END)) SS_DELAY(12)
                         SS_TAP(X_DELETE));
             return false;
 
