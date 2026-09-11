@@ -142,19 +142,19 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
  *
  *  오른손 숫자행 = F15 F16 F17 F18 F19,  - 자리 = '='
  *  시스템키: 1=Command Palette, Y=Task Manager, H=로컬 보안 화면, N=RDP 보안 화면
- *        U I O P \ = F7  F8  F9  F10 F11
- *        J K L ;   = F4  F5  F6  F12
- *        M , .     = F1  F2  F3
+ *        U I O P   = F1  F2  F3  F4; \ = base backslash
+ *        J K L ;   = F5  F6  F7  F8
+ *        M , . /   = F9  F10 F11 F12
  *
  *  ⚠ 엄지 '*' 예외는 그대로 필요하다. Alt(왼엄지 ])+왼손 글자가 같은 손이다.
  *    FN 자체는 오른엄지라 왼손 화살표와 교차손이다. 아래 chordal_hold_layout 참조.
  */
 [_FN] = LAYOUT(
   _______, CMD_PALETTE, LDEL_U,  LDEL_C,  LDEL_D,  KC_LBRC,                   KC_F15,  KC_F16,  KC_F17,  KC_F18,  KC_F19,  KC_EQL,
-  _______, KC_HOME, KC_PGDN, KC_PGUP, KC_END, LALT(KC_F4),                TASK_MANAGER, KC_F7,   KC_F8,   KC_F9,   KC_F10,  KC_F11,
-  QK_BOOT, KC_LEFT, KC_DOWN, KC_UP, KC_RGHT, CW_TOGG,                   SECURE_ATTENTION, KC_F4,   KC_F5,   KC_F6,   KC_F12,  QK_BOOT,
+  _______, KC_HOME, KC_PGDN, KC_PGUP, KC_END, LALT(KC_F4),                TASK_MANAGER, KC_F1,   KC_F2,   KC_F3,   KC_F4,   _______,
+  QK_BOOT, KC_LEFT, KC_DOWN, KC_UP, KC_RGHT, CW_TOGG,                   SECURE_ATTENTION, KC_F5,   KC_F6,   KC_F7,   KC_F8,   QK_BOOT,
   _______, LCTL(KC_LEFT), WDEL_B, WDEL_F, LCTL(KC_RGHT), KC_CAPS, KC_DEL,
-                                                           _______, RDP_SECURE_ATTENTION, KC_F1,   KC_F2,   KC_F3,   _______, _______,
+                                                           _______, RDP_SECURE_ATTENTION, KC_F9,   KC_F10,  KC_F11,  KC_F12,  _______,
                              _______, _______, _______,           _______, _______, _______
 )
 };
